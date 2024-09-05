@@ -1,36 +1,44 @@
 // src/pages/WeeklyReview.js
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, FormControl } from '@mui/material';
 import wppr from '../assets/images/wppr.png';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { getISOWeek, startOfWeek, addDays, subWeeks, format } from 'date-fns';
+import { startOfWeek, addDays, format, getISOWeek } from 'date-fns';
+import { useOutletContext } from 'react-router-dom';
 
 function WeeklyReview() {
-  const currentDate = new Date(); // Current date to determine the current week
-  const [selectedDate, setSelectedDate] = useState(currentDate); // State for selected date
-  const previousWeekDate = subWeeks(currentDate, 1); // Date corresponding to the previous week
+  const [selectedDate, setSelectedDate] = useOutletContext(); // Get shared state from MainLayout
 
-  // Calculate the Friday of the previous week for duration display
-  const startOfPreviousWeek = startOfWeek(previousWeekDate, { weekStartsOn: 5 }); 
-  const endOfPreviousWeek = addDays(startOfPreviousWeek, 6); 
+  // Calculate the start and end of the selected week (Friday to Thursday)
+  const startOfSelectedWeek = startOfWeek(selectedDate, { weekStartsOn: 5 }); // Week starts on Friday
+  const endOfSelectedWeek = addDays(startOfSelectedWeek, 6); // Week ends on Thursday
+  const selectedWeekNumber = getISOWeek(selectedDate); // Week number
+  const selectedMonth = format(selectedDate, 'MMMM'); // Month name
 
-  const previousWeekNumber = getISOWeek(previousWeekDate); // Week number of the previous week
-  const startDateFormatted = format(startOfPreviousWeek, 'EEEE 00:00 do MMMM', { timeZone: 'Europe/Paris' });
-  const endDateFormatted = format(endOfPreviousWeek, 'EEEE 23:59 do MMMM', { timeZone: 'Europe/Paris' });
+  const startDateFormatted = format(startOfSelectedWeek, 'EEEE 00:00 do MMMM', { timeZone: 'Europe/Paris' });
+  const endDateFormatted = format(endOfSelectedWeek, 'EEEE 23:59 do MMMM', { timeZone: 'Europe/Paris' });
+
+  // Handle week selection from DatePicker
+  const handleWeekSelect = (date) => {
+    const adjustedDate = startOfWeek(date, { weekStartsOn: 5 });
+    setSelectedDate(adjustedDate);
+  };
 
   return (
-    <Box sx={{ padding: '60px 20px', textAlign: 'center', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#b22a00', lineHeight: 1.2 }}>
+    <Box sx={{ padding: '20px', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#b22a00', lineHeight: 1.2, textAlign: 'center' }}>
         Weekly Platform Production Review
       </Typography>
-      <FormControl variant="outlined" sx={{ marginBottom: '20px', minWidth: 120 }}>
+
+      {/* Display Month in Calendar */}
+      <FormControl variant="outlined" sx={{ marginBottom: '20px', minWidth: 120, textAlign: 'center' }}>
         <DatePicker
           selected={selectedDate}
-          onChange={date => setSelectedDate(date)}
+          onChange={handleWeekSelect}
           showWeekNumbers
-          dateFormat="yyyy-MM-dd"
-          calendarStartDay={1}  // Week starts on Monday in the calendar
+          dateFormat="MMMM yyyy" // Shows month and year
+          calendarStartDay={5} // Week starts on Friday
           customInput={
             <Typography 
               variant="body1" 
@@ -50,11 +58,12 @@ function WeeklyReview() {
                   backgroundColor: '#ffe0db',
                 }
               }}>
-              Week {previousWeekNumber}
+              Week {selectedWeekNumber} ({selectedMonth})
             </Typography>
           }
         />
       </FormControl>
+
       <Typography 
         variant="body1" 
         gutterBottom 
@@ -69,12 +78,14 @@ function WeeklyReview() {
           display: 'inline-block',
           border: '1px solid #ddd',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+          textAlign: 'center'
         }}
       >
         {startDateFormatted} – {endDateFormatted} (Paris Time)
       </Typography>
-      <Box sx={{ marginTop: '50px', display: 'flex', justifyContent: 'center', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)' }}>
-        <img src={wppr} alt="Review Image" style={{ maxWidth: '80%', borderRadius: '8px', border: '2px solid #ddd', padding: '10px', backgroundColor: '#fff' }} />
+
+      <Box sx={{ marginTop: '50px', display: 'flex', justifyContent: 'center', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', maxWidth: '80%' }}>
+        <img src={wppr} alt="Review Image" style={{ maxWidth: '100%', borderRadius: '8px', border: '2px solid #ddd', padding: '10px', backgroundColor: '#fff' }} />
       </Box>
     </Box>
   );

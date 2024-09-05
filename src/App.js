@@ -20,7 +20,8 @@ function App() {
         >
           <Route path="/" element={<HomePage />} /> {/* HomePage without Sidebar */}
           <Route path="/weekly-review" element={<WeeklyReview />} /> {/* WeeklyReview with Sidebar */}
-          <Route path="/weekly-review/incidents/24070284" element={<IncidentPage />} /> {/* IncidentPage with Sidebar */}
+          {/* <Route path="/weekly-review/incidents/24070284" element={<IncidentPage />} /> IncidentPage with Sidebar */}
+          <Route path="/weekly-review/incidents/:id" element={<IncidentPage />} />
         </Route>
         <Route path="*" element={<Navigate to={isAuthenticated ? '/' : '/login'} />} />
       </Routes>

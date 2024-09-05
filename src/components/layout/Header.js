@@ -1,42 +1,86 @@
 // src/components/layout/Header.js
-import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
-import { NavLink, useLocation } from 'react-router-dom';
-import logo from '../../assets/images/pre-logo.png';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Link } from 'react-router-dom'; // For navigation
+import Logo from '../../assets/images/pre-logo.png'; // Example logo import
 
 function Header() {
-  const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Toggle the drawer
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  // Drawer content (Navigation Tree)
+  const list = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+      <List>
+        <ListItem button component={Link} to="/">
+          <ListItemText primary="Home" />
+        </ListItem>
+        <ListItem button component={Link} to="/weekly-review">
+          <ListItemText primary="Weekly Platform Review" />
+        </ListItem>
+        {/* Add more navigation items here if needed */}
+      </List>
+    </Box>
+  );
 
   return (
-    <AppBar position="static" style={{ backgroundColor: '#fff', color: '#000', boxShadow: 'none', borderBottom: '1px solid #ddd' }}>
-      <Toolbar style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: '56px' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#fff', color: '#b22a00' }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        {/* Left side: Menu icon and clickable logo */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logo} alt="Logo" style={{ height: '40px', marginRight: '20px' }} />
-          <Box sx={{ display: 'flex', gap: '24px' }}>
-            <NavLink 
-              to="/" 
-              style={({ isActive }) => ({
-                fontWeight: isActive || location.pathname === "/" ? 700 : 500, 
-                color: isActive || location.pathname === "/" ? 'red' : 'black', 
-                textDecoration: 'none' 
-              })}>
-              <Typography variant="body1">HOME</Typography>
-            </NavLink>
-            <NavLink 
-              to="/weekly-review" 
-              style={({ isActive }) => ({
-                fontWeight: isActive || location.pathname.includes("/weekly-review") ? 700 : 500, 
-                color: isActive || location.pathname.includes("/weekly-review") ? 'red' : 'black', 
-                textDecoration: 'none' 
-              })}>
-              <Typography variant="body1">Weekly Platform Review</Typography>
-            </NavLink>
-          </Box>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)} sx={{ mr: 2 }}>
+            <MenuIcon />
+          </IconButton>
+
+          {/* Clickable Logo */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img src={Logo} alt="Logo" style={{ height: '40px', marginRight: '20px' }} />
+          </Link>
+
+          {/* Home Link */}
+          <Link to="/" style={{ textDecoration: 'none', color: '#b22a00' }}>
+            <Typography variant="h6" sx={{ marginRight: '20px', fontWeight: 'bold' }}>
+              Home
+            </Typography>
+          </Link>
+
+          {/* Weekly Review Link */}
+          <Link to="/weekly-review" style={{ textDecoration: 'none', color: '#b22a00' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Weekly Platform Review
+            </Typography>
+          </Link>
+        </Box>
+
+        {/* Right side: Icons */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton color="inherit">
+            <SearchIcon />
+          </IconButton>
+          <IconButton color="inherit">
+            <NotificationsIcon />
+          </IconButton>
+          <IconButton color="inherit">
+            <AccountCircle />
+          </IconButton>
         </Box>
       </Toolbar>
+
+      {/* Drawer (Side Menu) */}
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        {list}
+      </Drawer>
     </AppBar>
   );
 }
