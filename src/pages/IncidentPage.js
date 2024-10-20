@@ -1,31 +1,39 @@
 // src/pages/IncidentPage.js
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { Box, Typography, Paper } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { incidents } from '../data/data';
 
 function IncidentPage() {
-  const { id } = useParams();  // Get the incident ID from the URL
-  const incident = incidents.find((incident) => incident.id === id);  // Find the incident by ID
+  const { incidentId } = useParams();
+  
+  // Find the incident by its ID
+  const incident = incidents.find((incident) => incident.id === incidentId);
 
   if (!incident) {
-    return <Typography variant="h6">Incident not found</Typography>;
+    return (
+      <Box sx={{ padding: '20px', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
+        <Typography variant="h4" sx={{ color: '#b22a00', fontWeight: 'bold' }}>
+          Incident not found
+        </Typography>
+      </Box>
+    );
   }
 
   return (
     <Box sx={{ padding: '20px', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
       <Paper sx={{ padding: '20px', marginBottom: '20px', backgroundColor: '#fff' }}>
         <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-          {incident.id}: {incident.title}
+          {incident.id}: [PLATFORM] Incident Details
         </Typography>
         <Typography variant="subtitle1" sx={{ color: '#777', marginBottom: '10px' }}>
-          Impacted XAAS: {incident.impactedXaas} | IMPACTED AZ: {incident.impactedAZ} | Unity Incidents: {incident.unityIncidents}
+          Impacted XAAS: {incident.impactedXaas || 'N/A'} | Impacted AZ: {incident.impactedAz || 'N/A'} | Incident Date: {incident.date}
         </Typography>
         <Typography variant="subtitle2" sx={{ color: '#999', marginBottom: '20px' }}>
-          {incident.date} | {incident.time}
+          {incident.date} (Closed on {incident.closedDate})
         </Typography>
         <Typography variant="body1" sx={{ color: '#b22a00', fontWeight: 'bold' }}>
-          Primary Contact: {incident.contact}
+          Priority: {incident.priority}
         </Typography>
       </Paper>
 
@@ -67,10 +75,10 @@ function IncidentPage() {
 
       <Paper sx={{ padding: '20px', backgroundColor: '#fff' }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-          Team in charge
+          Team in Charge
         </Typography>
         <Typography variant="body1">
-          {incident.teamInCharge}
+          {incident.teamInCharge || 'N/A'}
         </Typography>
       </Paper>
     </Box>
