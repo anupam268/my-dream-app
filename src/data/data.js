@@ -1,5 +1,7 @@
 // src/data/data.js
-export const incidents = [
+export const incidents = 
+{
+  platformIncidents: [
   // Week 35 (Friday 30th August – Thursday 5th September 2024)
   {
     id: "24070284",
@@ -221,4 +223,19 @@ export const incidents = [
     openDate: "2024-08-21",
     closeDate: "2024-08-21"
   }
-];
+],
+nonIceboardIncidents:
+[
+  {
+    id: '221252551',
+    priority: 'P1',
+    date: '2024-09-06',
+    description: 'This is a non-Iceboard incident...',
+    rootCause: 'Cause for non-Iceboard incident...',
+    solution: 'Solution for non-Iceboard incident...',
+    actions: 'Action steps for non-Iceboard incident.',
+    team: 'Non-Iceboard Team',
+  },
+    
+  // This will be filled via UI
+]};

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import MainLayout from './components/layout/MainLayout';
 import IncidentPage from './pages/IncidentPage';
 import WeeklyReview from './pages/WeeklyReview';
-import HomePage from './pages/HomePage'; // HomePage without a sidebar
+import AddIncident from './pages/AddIncident';
 import Login from './pages/Login';
 
 function App() {
@@ -18,15 +18,15 @@ function App() {
           path="/"
           element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" />}
         >
-          <Route path="/" element={<HomePage />} /> {/* HomePage without Sidebar */}
-          <Route path="/weekly-review" element={<WeeklyReview />} /> {/* WeeklyReview with Sidebar */}
-          {/* <Route path="/weekly-review/incidents/24070284" element={<IncidentPage />} /> IncidentPage with Sidebar */}
+          <Route path="/" element={<WeeklyReview />} />
+          <Route path="/weekly-review" element={<WeeklyReview />} />
           <Route path="/weekly-review/incidents/:id" element={<IncidentPage />} />
+          <Route path="/add-incident" element={<AddIncident />} /> {/* Add Incident Route */}
         </Route>
         <Route path="*" element={<Navigate to={isAuthenticated ? '/' : '/login'} />} />
       </Routes>
     </Router>
   );
-}
+    }
 
 export default App;
